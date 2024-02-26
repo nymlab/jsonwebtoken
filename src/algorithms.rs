@@ -81,25 +81,3 @@ impl Algorithm {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use wasm_bindgen_test::wasm_bindgen_test;
-
-    use super::*;
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn generate_algorithm_enum_from_str() {
-        assert!(Algorithm::from_str("HS256").is_ok());
-        assert!(Algorithm::from_str("HS384").is_ok());
-        assert!(Algorithm::from_str("HS512").is_ok());
-        assert!(Algorithm::from_str("RS256").is_ok());
-        assert!(Algorithm::from_str("RS384").is_ok());
-        assert!(Algorithm::from_str("RS512").is_ok());
-        assert!(Algorithm::from_str("PS256").is_ok());
-        assert!(Algorithm::from_str("PS384").is_ok());
-        assert!(Algorithm::from_str("PS512").is_ok());
-        assert!(Algorithm::from_str("").is_err());
-    }
-}

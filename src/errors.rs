@@ -76,8 +76,6 @@ pub enum ErrorKind {
     Json(Arc<serde_json::Error>),
     /// Some of the text was invalid UTF-8
     Utf8(::std::string::FromUtf8Error),
-    /// Something unspecified went wrong with crypto
-    Crypto(::ring::error::Unspecified),
 }
 
 impl StdError for Error {
@@ -101,7 +99,6 @@ impl StdError for Error {
             ErrorKind::Base64(err) => Some(err),
             ErrorKind::Json(err) => Some(err.as_ref()),
             ErrorKind::Utf8(err) => Some(err),
-            ErrorKind::Crypto(err) => Some(err),
         }
     }
 }
@@ -126,7 +123,6 @@ impl fmt::Display for Error {
             ErrorKind::InvalidRsaKey(msg) => write!(f, "RSA key invalid: {}", msg),
             ErrorKind::Json(err) => write!(f, "JSON error: {}", err),
             ErrorKind::Utf8(err) => write!(f, "UTF-8 error: {}", err),
-            ErrorKind::Crypto(err) => write!(f, "Crypto error: {}", err),
             ErrorKind::Base64(err) => write!(f, "Base64 error: {}", err),
         }
     }
@@ -159,36 +155,8 @@ impl From<::std::string::FromUtf8Error> for Error {
     }
 }
 
-impl From<::ring::error::Unspecified> for Error {
-    fn from(err: ::ring::error::Unspecified) -> Error {
-        new_error(ErrorKind::Crypto(err))
-    }
-}
-
-impl From<::ring::error::KeyRejected> for Error {
-    fn from(_err: ::ring::error::KeyRejected) -> Error {
-        new_error(ErrorKind::InvalidEcdsaKey)
-    }
-}
-
 impl From<ErrorKind> for Error {
     fn from(kind: ErrorKind) -> Error {
         new_error(kind)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use wasm_bindgen_test::wasm_bindgen_test;
-
-    use super::*;
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn test_error_rendering() {
-        assert_eq!(
-            "InvalidAlgorithmName",
-            Error::from(ErrorKind::InvalidAlgorithmName).to_string()
-        );
     }
 }

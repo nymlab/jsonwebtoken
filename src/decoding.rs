@@ -70,64 +70,6 @@ impl DecodingKey {
         Ok(DecodingKey { family: AlgorithmFamily::Hmac, kind: DecodingKeyKind::SecretOrDer(out) })
     }
 
-    /// If you are loading a public RSA key in a PEM format, use this.
-    /// Only exists if the feature `use_pem` is enabled.
-    #[cfg(feature = "use_pem")]
-    pub fn from_rsa_pem(key: &[u8]) -> Result<Self> {
-        let pem_key = PemEncodedKey::new(key)?;
-        let content = pem_key.as_rsa_key()?;
-        Ok(DecodingKey {
-            family: AlgorithmFamily::Rsa,
-            kind: DecodingKeyKind::SecretOrDer(content.to_vec()),
-        })
-    }
-
-    /// If you have (n, e) RSA public key components as strings, use this.
-    pub fn from_rsa_components(modulus: &str, exponent: &str) -> Result<Self> {
-        let n = b64_decode(modulus)?;
-        let e = b64_decode(exponent)?;
-        Ok(DecodingKey {
-            family: AlgorithmFamily::Rsa,
-            kind: DecodingKeyKind::RsaModulusExponent { n, e },
-        })
-    }
-
-    /// If you have (n, e) RSA public key components already decoded, use this.
-    pub fn from_rsa_raw_components(modulus: &[u8], exponent: &[u8]) -> Self {
-        DecodingKey {
-            family: AlgorithmFamily::Rsa,
-            kind: DecodingKeyKind::RsaModulusExponent { n: modulus.to_vec(), e: exponent.to_vec() },
-        }
-    }
-
-    /// If you have a ECDSA public key in PEM format, use this.
-    /// Only exists if the feature `use_pem` is enabled.
-    #[cfg(feature = "use_pem")]
-    pub fn from_ec_pem(key: &[u8]) -> Result<Self> {
-        let pem_key = PemEncodedKey::new(key)?;
-        let content = pem_key.as_ec_public_key()?;
-        Ok(DecodingKey {
-            family: AlgorithmFamily::Ec,
-            kind: DecodingKeyKind::SecretOrDer(content.to_vec()),
-        })
-    }
-
-    /// If you have (x,y) ECDSA key components
-    pub fn from_ec_components(x: &str, y: &str) -> Result<Self> {
-        let x_cmp = b64_decode(x)?;
-        let y_cmp = b64_decode(y)?;
-
-        let mut public_key = Vec::with_capacity(1 + x.len() + y.len());
-        public_key.push(0x04);
-        public_key.extend_from_slice(&x_cmp);
-        public_key.extend_from_slice(&y_cmp);
-
-        Ok(DecodingKey {
-            family: AlgorithmFamily::Ec,
-            kind: DecodingKeyKind::SecretOrDer(public_key),
-        })
-    }
-
     /// If you have a EdDSA public key in PEM format, use this.
     /// Only exists if the feature `use_pem` is enabled.
     #[cfg(feature = "use_pem")]
@@ -177,10 +119,10 @@ impl DecodingKey {
     pub fn from_jwk(jwk: &Jwk) -> Result<Self> {
         match &jwk.algorithm {
             AlgorithmParameters::RSA(params) => {
-                DecodingKey::from_rsa_components(&params.n, &params.e)
+                return Err(new_error(ErrorKind::MissingAlgorithm));
             }
             AlgorithmParameters::EllipticCurve(params) => {
-                DecodingKey::from_ec_components(&params.x, &params.y)
+                return Err(new_error(ErrorKind::MissingAlgorithm));
             }
             AlgorithmParameters::OctetKeyPair(params) => DecodingKey::from_ed_components(&params.x),
             AlgorithmParameters::OctetKey(params) => {

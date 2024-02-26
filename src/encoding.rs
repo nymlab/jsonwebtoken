@@ -14,56 +14,20 @@ use crate::serialization::b64_encode_part;
 #[derive(Clone)]
 pub struct EncodingKey {
     pub(crate) family: AlgorithmFamily,
-    content: Vec<u8>,
+    pub(crate) content: Vec<u8>,
+    pub(crate) public_key: Vec<u8>,
 }
 
 impl EncodingKey {
     /// If you're using a HMAC secret that is not base64, use that.
     pub fn from_secret(secret: &[u8]) -> Self {
-        EncodingKey { family: AlgorithmFamily::Hmac, content: secret.to_vec() }
+        EncodingKey { family: AlgorithmFamily::Hmac, content: secret.to_vec(), public_key: vec![] }
     }
 
     /// If you have a base64 HMAC secret, use that.
     pub fn from_base64_secret(secret: &str) -> Result<Self> {
         let out = STANDARD.decode(secret)?;
-        Ok(EncodingKey { family: AlgorithmFamily::Hmac, content: out })
-    }
-
-    /// If you are loading a RSA key from a .pem file.
-    /// This errors if the key is not a valid RSA key.
-    /// Only exists if the feature `use_pem` is enabled.
-    ///
-    /// # NOTE
-    ///
-    /// According to the [ring doc](https://docs.rs/ring/latest/ring/signature/struct.RsaKeyPair.html#method.from_pkcs8),
-    /// the key should be at least 2047 bits.
-    ///
-    #[cfg(feature = "use_pem")]
-    pub fn from_rsa_pem(key: &[u8]) -> Result<Self> {
-        let pem_key = PemEncodedKey::new(key)?;
-        let content = pem_key.as_rsa_key()?;
-        Ok(EncodingKey { family: AlgorithmFamily::Rsa, content: content.to_vec() })
-    }
-
-    /// If you are loading a ECDSA key from a .pem file
-    /// This errors if the key is not a valid private EC key
-    /// Only exists if the feature `use_pem` is enabled.
-    ///
-    /// # NOTE
-    ///
-    /// The key should be in PKCS#8 form.
-    ///
-    /// You can generate a key with the following:
-    ///
-    /// ```sh
-    /// openssl ecparam -genkey -noout -name prime256v1 \
-    ///     | openssl pkcs8 -topk8 -nocrypt -out ec-private.pem
-    /// ```
-    #[cfg(feature = "use_pem")]
-    pub fn from_ec_pem(key: &[u8]) -> Result<Self> {
-        let pem_key = PemEncodedKey::new(key)?;
-        let content = pem_key.as_ec_private_key()?;
-        Ok(EncodingKey { family: AlgorithmFamily::Ec, content: content.to_vec() })
+        Ok(EncodingKey { family: AlgorithmFamily::Hmac, content: out, public_key: vec![] })
     }
 
     /// If you are loading a EdDSA key from a .pem file
@@ -72,23 +36,8 @@ impl EncodingKey {
     #[cfg(feature = "use_pem")]
     pub fn from_ed_pem(key: &[u8]) -> Result<Self> {
         let pem_key = PemEncodedKey::new(key)?;
-        let content = pem_key.as_ed_private_key()?;
-        Ok(EncodingKey { family: AlgorithmFamily::Ed, content: content.to_vec() })
-    }
-
-    /// If you know what you're doing and have the DER-encoded key, for RSA only
-    pub fn from_rsa_der(der: &[u8]) -> Self {
-        EncodingKey { family: AlgorithmFamily::Rsa, content: der.to_vec() }
-    }
-
-    /// If you know what you're doing and have the DER-encoded key, for ECDSA
-    pub fn from_ec_der(der: &[u8]) -> Self {
-        EncodingKey { family: AlgorithmFamily::Ec, content: der.to_vec() }
-    }
-
-    /// If you know what you're doing and have the DER-encoded key, for EdDSA
-    pub fn from_ed_der(der: &[u8]) -> Self {
-        EncodingKey { family: AlgorithmFamily::Ed, content: der.to_vec() }
+        let private_key = pem_key.as_ed_private_key()?;
+        Ok(EncodingKey { family: AlgorithmFamily::Ed, content: private_key.to_vec(), public_key: vec![] })
     }
 
     pub(crate) fn inner(&self) -> &[u8] {
