@@ -1,5 +1,5 @@
 [package]
-name = "jsonwebtoken-test"
+name = "jsonwebtoken_wasm"
 version = "9.2.0"
 authors = ["Vincent Prouillet <hello@vincentprouillet.com>"]
 license = "MIT"
