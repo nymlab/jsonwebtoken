@@ -22,3 +22,4 @@ pub use decoding::{decode, decode_header, DecodingKey, TokenData};
 pub use encoding::{encode, EncodingKey};
 pub use header::Header;
 pub use validation::Validation;
+pub use serialization::{b64_encode, b64_decode};
