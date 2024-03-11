@@ -43,7 +43,7 @@ pub fn sign(message: &[u8], key: &EncodingKey, algorithm: Algorithm) -> Result<S
     }
 }
 
-/// See Ring docs for more details
+#[cfg(not(feature = "ptd"))]
 fn verify_ring(
     alg: &'static dyn signature::VerificationAlgorithm,
     signature: &str,
@@ -56,6 +56,25 @@ fn verify_ring(
 
     Ok(res.is_ok())
 }
+
+#[cfg(feature = "ptd")]
+fn verify_ring(
+    algorithm: Algorithm,
+    signature: &str,
+    message: &[u8],
+    key: &[u8],
+) -> Result<bool> {
+    let signature = b64_decode(signature).unwrap();
+    let key_without_headers = &key[12..44];
+
+    let dalek_signature = ed25519_dalek::Signature::from_bytes(&signature).unwrap();
+    let public_key = ed25519_dalek::PublicKey::from_bytes(key_without_headers).unwrap();
+
+    let res = public_key.verify(&message, &dalek_signature);
+
+    Ok(res.is_ok())
+}
+
 
 /// Compares the signature given with a re-computed signature for HMAC or using the public key
 /// for RSA/EC.

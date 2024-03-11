@@ -25,6 +25,7 @@ serde = { version = "1.0", features = ["derive"] }
 base64 = "0.21.0"
 # For PEM decoding
 pem = { version = "3", optional = true }
+ed25519-dalek = { version="2.1.1", optional = true }
 simple_asn1 = { version = "0.6", optional = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -50,6 +51,7 @@ criterion = { version = "0.4", default-features = false }
 [features]
 default = ["use_pem"]
 use_pem = ["pem", "simple_asn1"]
+ptd = ["ed25519-dalek"]
 
 [[bench]]
 name = "jwt"
