@@ -1,3 +1,5 @@
+#[cfg(feature = "ptd")]
+use base64::engine::general_purpose::STANDARD;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use serde::{Deserialize, Serialize};
 
@@ -9,6 +11,18 @@ pub(crate) fn b64_encode<T: AsRef<[u8]>>(input: T) -> String {
 
 pub(crate) fn b64_decode<T: AsRef<[u8]>>(input: T) -> Result<Vec<u8>> {
     URL_SAFE_NO_PAD.decode(input).map_err(|e| e.into())
+}
+
+/// Decodes data from base64 string following STANDARD format
+#[cfg(feature = "ptd")]
+pub fn b64_decode_standard<T: AsRef<[u8]>>(input: T) -> Result<Vec<u8>> {
+    STANDARD.decode(input).map_err(|e| e.into())
+}
+
+/// Serializes data into base64 following STANDARD format
+#[cfg(feature = "ptd")]
+pub fn b64_encode_standard<T: AsRef<[u8]>>(input: T) -> String {
+    STANDARD.encode(input)
 }
 
 /// Serializes a struct to JSON and encodes it in base64

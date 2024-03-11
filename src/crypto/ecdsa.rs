@@ -1,8 +1,7 @@
-use ring::{rand, signature};
-
 use crate::algorithms::Algorithm;
 use crate::errors::Result;
 use crate::serialization::b64_encode;
+use ring::{rand, signature};
 
 /// Only used internally when validating EC, to map from our enum to the Ring EcdsaVerificationAlgorithm structs.
 pub(crate) fn alg_to_ec_verification(

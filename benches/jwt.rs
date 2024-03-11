@@ -1,5 +1,7 @@
+#[cfg(not(feature = "ptd"))]
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+#[cfg(not(feature = "ptd"))]
+use jsonwebtoken_wasm::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -8,6 +10,7 @@ struct Claims {
     company: String,
 }
 
+#[cfg(not(feature = "ptd"))]
 fn bench_encode(c: &mut Criterion) {
     let claim = Claims { sub: "b@b.com".to_owned(), company: "ACME".to_owned() };
     let key = EncodingKey::from_secret("secret".as_ref());
@@ -17,6 +20,7 @@ fn bench_encode(c: &mut Criterion) {
     });
 }
 
+#[cfg(not(feature = "ptd"))]
 fn bench_decode(c: &mut Criterion) {
     let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ";
     let key = DecodingKey::from_secret("secret".as_ref());
@@ -32,5 +36,10 @@ fn bench_decode(c: &mut Criterion) {
     });
 }
 
+#[cfg(not(feature = "ptd"))]
 criterion_group!(benches, bench_encode, bench_decode);
+#[cfg(not(feature = "ptd"))]
 criterion_main!(benches);
+
+#[cfg(feature = "ptd")]
+fn main() {}
