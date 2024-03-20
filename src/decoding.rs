@@ -147,6 +147,7 @@ impl DecodingKey {
     }
 
     /// If you know what you're doing and have a RSA DER encoded public key, use this.
+    #[cfg(not(feature = "ptd"))]
     pub fn from_rsa_der(der: &[u8]) -> Self {
         DecodingKey {
             family: AlgorithmFamily::Rsa,
@@ -155,6 +156,7 @@ impl DecodingKey {
     }
 
     /// If you know what you're doing and have a RSA EC encoded public key, use this.
+    #[cfg(not(feature = "ptd"))]
     pub fn from_ec_der(der: &[u8]) -> Self {
         DecodingKey {
             family: AlgorithmFamily::Ec,

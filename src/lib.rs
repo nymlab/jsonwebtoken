@@ -21,7 +21,7 @@ pub use decoding::{decode, decode_header, DecodingKey, TokenData};
 pub use encoding::{encode, EncodingKey};
 pub use header::Header;
 #[cfg(feature = "ptd")]
-pub use serialization::b64_decode_standard;
+pub use serialization::{b64_decode_standard, b64_encode_standard};
 #[cfg(feature = "ptd")]
 pub use validation::Validation;
 #[cfg(not(feature = "ptd"))]
