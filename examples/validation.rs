@@ -1,4 +1,6 @@
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::errors::ErrorKind;
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
@@ -10,6 +12,7 @@ struct Claims {
     exp: u64,
 }
 
+#[cfg(not(feature = "ptd"))]
 fn main() {
     let key = b"secret";
     let my_claims = Claims {
@@ -37,3 +40,6 @@ fn main() {
     println!("{:?}", token_data.claims);
     println!("{:?}", token_data.header);
 }
+
+#[cfg(feature = "ptd")]
+fn main() {}

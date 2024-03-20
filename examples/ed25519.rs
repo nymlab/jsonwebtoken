@@ -1,6 +1,8 @@
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{
     decode, encode, get_current_timestamp, Algorithm, DecodingKey, EncodingKey, Validation,
 };
+#[cfg(not(feature = "ptd"))]
 use ring::signature::{Ed25519KeyPair, KeyPair};
 use serde::{Deserialize, Serialize};
 
@@ -10,6 +12,7 @@ pub struct Claims {
     exp: u64,
 }
 
+#[cfg(not(feature = "ptd"))]
 fn main() {
     let doc = Ed25519KeyPair::generate_pkcs8(&ring::rand::SystemRandom::new()).unwrap();
     let encoding_key = EncodingKey::from_ed_der(doc.as_ref());
@@ -26,6 +29,7 @@ fn main() {
     let _token_data = decode::<Claims>(&token, &decoding_key, &validation).unwrap();
 }
 
+#[cfg(not(feature = "ptd"))]
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -60,3 +64,6 @@ mod tests {
         assert_eq!(token_data.claims.sub, "test");
     }
 }
+
+#[cfg(feature = "ptd")]
+fn main() {}

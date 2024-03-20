@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::errors::ErrorKind;
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -10,6 +12,7 @@ struct Claims {
     exp: u64,
 }
 
+#[cfg(not(feature = "ptd"))]
 fn main() {
     let my_claims =
         Claims { sub: "b@b.com".to_owned(), company: "ACME".to_owned(), exp: 10000000000 };
@@ -38,3 +41,6 @@ fn main() {
     println!("{:?}", token_data.claims);
     println!("{:?}", token_data.header);
 }
+
+#[cfg(feature = "ptd")]
+fn main() {}

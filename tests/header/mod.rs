@@ -1,9 +1,12 @@
 use base64::{engine::general_purpose::STANDARD, Engine};
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::Header;
+#[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 
 static CERT_CHAIN: [&str; 3] = include!("cert_chain.json");
 
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn x5c_der_empty_chain() {
@@ -14,6 +17,7 @@ fn x5c_der_empty_chain() {
     assert_eq!(header.x5c_der().unwrap(), Some(Vec::new()));
 }
 
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn x5c_der_valid_chain() {
@@ -26,6 +30,7 @@ fn x5c_der_valid_chain() {
     assert_eq!(header.x5c_der().unwrap(), Some(der_chain));
 }
 
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn x5c_der_invalid_chain() {

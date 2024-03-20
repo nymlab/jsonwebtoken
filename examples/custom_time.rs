@@ -1,9 +1,13 @@
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
+#[cfg(not(feature = "ptd"))]
 use time::{Duration, OffsetDateTime};
+
+use serde::{Deserialize, Serialize};
 
 const SECRET: &str = "some-secret";
 
+#[cfg(not(feature = "ptd"))]
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Claims {
     sub: String,
@@ -13,6 +17,7 @@ struct Claims {
     exp: OffsetDateTime,
 }
 
+#[cfg(not(feature = "ptd"))]
 impl Claims {
     /// If a token should always be equal to its representation after serializing and deserializing
     /// again, this function must be used for construction. `OffsetDateTime` contains a microsecond
@@ -35,6 +40,7 @@ impl Claims {
     }
 }
 
+#[cfg(not(feature = "ptd"))]
 mod jwt_numeric_date {
     //! Custom serialization of OffsetDateTime to conform with the JWT spec (RFC 7519 section 2, "Numeric Date")
     use serde::{self, Deserialize, Deserializer, Serializer};
@@ -131,6 +137,7 @@ mod jwt_numeric_date {
     }
 }
 
+#[cfg(not(feature = "ptd"))]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sub = "Custom OffsetDateTime ser/de".to_string();
     let iat = OffsetDateTime::now_utc();
@@ -153,5 +160,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
 
     println!("token data:\n{:#?}", &token_data);
+    Ok(())
+}
+
+#[cfg(feature = "ptd")]
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }

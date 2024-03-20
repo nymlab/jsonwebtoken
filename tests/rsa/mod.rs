@@ -1,13 +1,15 @@
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
 use serde::{Deserialize, Serialize};
+#[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 use jsonwebtoken::{decode, encode, Header, Validation};
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 use time::OffsetDateTime;
 
 const RSA_ALGORITHMS: &[Algorithm] = &[
@@ -26,7 +28,7 @@ pub struct Claims {
     exp: i64,
 }
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pem_pkcs1() {
@@ -58,7 +60,7 @@ fn round_trip_sign_verification_pem_pkcs1() {
     }
 }
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pem_pkcs8() {
@@ -90,6 +92,7 @@ fn round_trip_sign_verification_pem_pkcs8() {
     }
 }
 
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_der() {
@@ -105,7 +108,7 @@ fn round_trip_sign_verification_der() {
     }
 }
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_claim() {
@@ -142,7 +145,7 @@ fn round_trip_claim() {
     }
 }
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn rsa_modulus_exponent() {
@@ -169,7 +172,7 @@ fn rsa_modulus_exponent() {
     assert!(res.is_ok());
 }
 
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn rsa_jwk() {
@@ -206,7 +209,7 @@ fn rsa_jwk() {
 }
 
 // https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken
-#[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn roundtrip_with_jwtio_example_jey() {
