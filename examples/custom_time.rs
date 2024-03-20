@@ -1,5 +1,5 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken_wasm::{Algorithm, DecodingKey, EncodingKey, Header, Validation};
 #[cfg(not(feature = "ptd"))]
 use time::{Duration, OffsetDateTime};
 
@@ -145,7 +145,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let claims = Claims::new(sub, iat, exp);
 
-    let token = jsonwebtoken::encode(
+    let token = jsonwebtoken_wasm::encode(
         &Header::default(),
         &claims,
         &EncodingKey::from_secret(SECRET.as_ref()),
@@ -153,7 +153,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("serialized token: {}", &token);
 
-    let token_data = jsonwebtoken::decode::<Claims>(
+    let token_data = jsonwebtoken_wasm::decode::<Claims>(
         &token,
         &DecodingKey::from_secret(SECRET.as_ref()),
         &Validation::new(Algorithm::HS256),

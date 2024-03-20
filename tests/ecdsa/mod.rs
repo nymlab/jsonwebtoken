@@ -1,10 +1,10 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{
+use jsonwebtoken_wasm::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{decode, encode, Header, Validation};
+use jsonwebtoken_wasm::{decode, encode, Header, Validation};
 #[cfg(not(feature = "ptd"))]
 use serde::{Deserialize, Serialize};
 #[cfg(not(feature = "ptd"))]
@@ -110,7 +110,7 @@ fn ec_x_y() {
 #[test]
 #[wasm_bindgen_test]
 fn ed_jwk() {
-    use jsonwebtoken::jwk::Jwk;
+    use jsonwebtoken_wasm::jwk::Jwk;
     use serde_json::json;
 
     let privkey = include_str!("private_ecdsa_key.pem");

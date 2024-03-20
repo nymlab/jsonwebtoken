@@ -1,5 +1,5 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{
+use jsonwebtoken_wasm::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen_test::wasm_bindgen_test;
 
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{decode, encode, Header, Validation};
+use jsonwebtoken_wasm::{decode, encode, Header, Validation};
 #[cfg(not(feature = "ptd"))]
 use time::OffsetDateTime;
 
@@ -176,7 +176,7 @@ fn rsa_modulus_exponent() {
 #[test]
 #[wasm_bindgen_test]
 fn rsa_jwk() {
-    use jsonwebtoken::jwk::Jwk;
+    use jsonwebtoken_wasm::jwk::Jwk;
     use serde_json::json;
 
     let privkey = include_str!("private_rsa_key_pkcs8.pem");
@@ -208,7 +208,7 @@ fn rsa_jwk() {
     assert!(res.is_ok());
 }
 
-// https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken
+// https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken_wasm
 #[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]

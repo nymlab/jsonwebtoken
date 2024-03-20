@@ -1,7 +1,7 @@
 #[cfg(not(feature = "ptd"))]
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken_wasm::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

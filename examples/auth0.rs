@@ -1,8 +1,8 @@
 /// Example for the backend to backend implementation
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::jwk::AlgorithmParameters;
+use jsonwebtoken_wasm::jwk::AlgorithmParameters;
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{decode, decode_header, jwk, Algorithm, DecodingKey, Validation};
+use jsonwebtoken_wasm::{decode, decode_header, jwk, Algorithm, DecodingKey, Validation};
 
 use std::collections::HashMap;
 use std::str::FromStr;

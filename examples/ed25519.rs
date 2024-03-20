@@ -1,5 +1,5 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{
+use jsonwebtoken_wasm::{
     decode, encode, get_current_timestamp, Algorithm, DecodingKey, EncodingKey, Validation,
 };
 #[cfg(not(feature = "ptd"))]
@@ -23,7 +23,7 @@ fn main() {
     let claims = Claims { sub: "test".to_string(), exp: get_current_timestamp() };
 
     let token =
-        encode(&jsonwebtoken::Header::new(Algorithm::EdDSA), &claims, &encoding_key).unwrap();
+        encode(&jsonwebtoken_wasm::Header::new(Algorithm::EdDSA), &claims, &encoding_key).unwrap();
 
     let validation = Validation::new(Algorithm::EdDSA);
     let _token_data = decode::<Claims>(&token, &decoding_key, &validation).unwrap();

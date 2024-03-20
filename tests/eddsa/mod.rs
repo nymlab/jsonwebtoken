@@ -1,5 +1,5 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{
+use jsonwebtoken_wasm::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen_test::wasm_bindgen_test;
 
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{decode, encode, Header, Validation};
+use jsonwebtoken_wasm::{decode, encode, Header, Validation};
 #[cfg(not(feature = "ptd"))]
 use time::OffsetDateTime;
 
@@ -110,7 +110,7 @@ fn ed_x() {
 #[test]
 #[wasm_bindgen_test]
 fn ed_jwk() {
-    use jsonwebtoken::jwk::Jwk;
+    use jsonwebtoken_wasm::jwk::Jwk;
     use serde_json::json;
 
     let privkey = include_str!("private_ed25519_key.pem");

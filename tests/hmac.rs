@@ -1,9 +1,9 @@
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::errors::ErrorKind;
+use jsonwebtoken_wasm::errors::ErrorKind;
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::jwk::Jwk;
+use jsonwebtoken_wasm::jwk::Jwk;
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::{
+use jsonwebtoken_wasm::{
     crypto::{sign, verify},
     decode, decode_header, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation,
 };

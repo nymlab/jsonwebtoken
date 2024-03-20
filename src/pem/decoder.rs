@@ -90,7 +90,7 @@ impl PemEncodedKey {
                     // "there is no such thing as a "PKCS#1 format" for elliptic curve (EC) keys"
 
                     // This handles PKCS#8 certificates and public & private keys
-                    _tag @ "PRIVATE KEY" | _tag @ "PUBLIC KEY" | _tag @ "CERTIFICATE" => {
+                    tag @ "PRIVATE KEY" | tag @ "PUBLIC KEY" | tag @ "CERTIFICATE" => {
                         #[cfg(not(feature = "ptd"))]
                         match classify_pem(&asn1_content) {
                             Some(c) => {

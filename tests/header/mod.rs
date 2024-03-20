@@ -1,6 +1,6 @@
 use base64::{engine::general_purpose::STANDARD, Engine};
 #[cfg(not(feature = "ptd"))]
-use jsonwebtoken::Header;
+use jsonwebtoken_wasm::Header;
 #[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 

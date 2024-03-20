@@ -136,7 +136,6 @@ impl DecodingKey {
 
     /// If you have a EdDSA public key in PEM format, use this.
     /// Only exists if the feature `use_pem` is enabled.
-    #[cfg(feature = "ptd")]
     pub fn from_ed_pem(key: &[u8]) -> Result<Self> {
         let pem_key = PemEncodedKey::new(key)?;
         let content = pem_key.as_ed_public_key()?;
