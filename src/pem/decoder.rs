@@ -223,6 +223,7 @@ impl PemEncodedKey {
 // Though PKCS#11 keys shouldn't have anything else.
 // It will get confusing with certificates.
 #[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 fn extract_first_bitstring(asn1: &[simple_asn1::ASN1Block]) -> Result<&[u8]> {
     for asn1_entry in asn1.iter() {
         match asn1_entry {

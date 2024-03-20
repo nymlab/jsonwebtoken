@@ -47,6 +47,7 @@ pub(crate) enum DecodingKeyKind {
 }
 
 #[cfg(feature = "use_pem")]
+#[cfg(not(feature = "ptd"))]
 #[derive(Clone)]
 pub(crate) enum DecodingKeyKind {
     SecretOrDer(Vec<u8>),
