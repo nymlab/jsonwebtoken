@@ -65,8 +65,8 @@ impl PemEncodedKey {
     pub fn new(input: &[u8]) -> Result<PemEncodedKey> {
         match pem::parse(input) {
             Ok(content) => {
-                #[cfg(not(feature = "ptd"))]
                 #[cfg(feature = "use_pem")]
+                #[cfg(not(feature = "ptd"))]
                 let asn1_content = match simple_asn1::from_der(content.contents()) {
                     Ok(asn1) => asn1,
                     Err(_) => return Err(ErrorKind::InvalidKeyFormat.into()),
@@ -97,6 +97,7 @@ impl PemEncodedKey {
 
                     // This handles PKCS#8 certificates and public & private keys
                     tag @ "PRIVATE KEY" | tag @ "PUBLIC KEY" | tag @ "CERTIFICATE" => {
+                        #[cfg(feature = "use_pem")]
                         #[cfg(not(feature = "ptd"))]
                         match classify_pem(&asn1_content) {
                             Some(c) => {

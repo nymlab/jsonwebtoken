@@ -40,17 +40,10 @@ macro_rules! expect_two {
     }};
 }
 
-#[cfg(feature = "ptd")]
 #[derive(Clone)]
 pub(crate) enum DecodingKeyKind {
     SecretOrDer(Vec<u8>),
-}
-
-#[cfg(feature = "use_pem")]
-#[cfg(not(feature = "ptd"))]
-#[derive(Clone)]
-pub(crate) enum DecodingKeyKind {
-    SecretOrDer(Vec<u8>),
+    #[cfg(feature = "use_pem")]
     RsaModulusExponent {
         n: Vec<u8>,
         e: Vec<u8>,
@@ -214,7 +207,7 @@ impl DecodingKey {
     pub(crate) fn as_bytes(&self) -> &[u8] {
         match &self.kind {
             DecodingKeyKind::SecretOrDer(b) => b,
-            #[cfg(not(feature = "ptd"))]
+            #[cfg(feature = "use_pem")]
             DecodingKeyKind::RsaModulusExponent { .. } => unreachable!(),
         }
     }
