@@ -40,10 +40,16 @@ macro_rules! expect_two {
     }};
 }
 
+#[cfg(feature = "ptd")]
 #[derive(Clone)]
 pub(crate) enum DecodingKeyKind {
     SecretOrDer(Vec<u8>),
-    #[cfg(not(feature = "ptd"))]
+}
+
+#[cfg(feature = "use_pem")]
+#[derive(Clone)]
+pub(crate) enum DecodingKeyKind {
+    SecretOrDer(Vec<u8>),
     RsaModulusExponent {
         n: Vec<u8>,
         e: Vec<u8>,

@@ -1,16 +1,21 @@
 use crate::errors::{ErrorKind, Result};
 
 /// Supported PEM files for EC and RSA Public and Private Keys
+#[cfg(not(feature = "ptd"))]
 #[derive(Debug, PartialEq)]
 enum PemType {
-    #[cfg(not(feature = "ptd"))]
     EcPublic,
-    #[cfg(not(feature = "ptd"))]
     EcPrivate,
-    #[cfg(not(feature = "ptd"))]
     RsaPublic,
-    #[cfg(not(feature = "ptd"))]
     RsaPrivate,
+    EdPublic,
+    EdPrivate,
+}
+
+/// Supported PEM files for EC and RSA Public and Private Keys
+#[cfg(feature = "ptd")]
+#[derive(Debug, PartialEq)]
+enum PemType {
     EdPublic,
     EdPrivate,
 }
@@ -61,6 +66,7 @@ impl PemEncodedKey {
         match pem::parse(input) {
             Ok(content) => {
                 #[cfg(not(feature = "ptd"))]
+                #[cfg(feature = "use_pem")]
                 let asn1_content = match simple_asn1::from_der(content.contents()) {
                     Ok(asn1) => asn1,
                     Err(_) => return Err(ErrorKind::InvalidKeyFormat.into()),
@@ -173,7 +179,6 @@ impl PemEncodedKey {
     }
 
     /// Can only be PKCS8
-    #[cfg(not(feature = "ptd"))]
     pub fn as_ed_private_key(&self) -> Result<&[u8]> {
         match self.standard {
             Standard::Pkcs1 => Err(ErrorKind::InvalidKeyFormat.into()),
