@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[cfg(not(feature = "ptd"))]
 use jsonwebtoken_wasm::errors::ErrorKind;
 #[cfg(not(feature = "ptd"))]

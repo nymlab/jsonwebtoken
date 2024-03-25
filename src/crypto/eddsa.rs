@@ -1,11 +1,13 @@
 use crate::errors::Result;
 use crate::serialization::b64_encode;
+
+#[cfg(feature = "ptd")]
 use crate::EncodingKey;
 #[cfg(feature = "ptd")]
 use ed25519_dalek::{PublicKey, SecretKey, Signer};
 
 #[cfg(not(feature = "ptd"))]
-use crate::{Algorithm, Header};
+use crate::Algorithm;
 #[cfg(not(feature = "ptd"))]
 use ring::signature;
 

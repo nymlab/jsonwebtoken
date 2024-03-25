@@ -13,15 +13,6 @@ enum PemType {
 }
 
 /// Supported PEM files for EC and RSA Public and Private Keys
-#[cfg(not(feature = "ptd"))]
-#[cfg(feature = "use_pem")]
-#[derive(Debug, PartialEq)]
-enum PemType {
-    EdPublic,
-    EdPrivate,
-}
-
-/// Supported PEM files for EC and RSA Public and Private Keys
 #[cfg(feature = "ptd")]
 #[derive(Debug, PartialEq)]
 enum PemType {
@@ -29,7 +20,6 @@ enum PemType {
 }
 
 #[cfg(not(feature = "ptd"))]
-#[cfg(feature = "use_pem")]
 #[derive(Debug, PartialEq)]
 enum Standard {
     // Only for RSA
@@ -46,7 +36,6 @@ enum Standard {
 }
 
 #[cfg(not(feature = "ptd"))]
-#[cfg(feature = "use_pem")]
 #[derive(Debug, PartialEq)]
 enum Classification {
     Ec,
@@ -84,27 +73,33 @@ impl PemEncodedKey {
     pub fn new(input: &[u8]) -> Result<PemEncodedKey> {
         match pem::parse(input) {
             Ok(content) => {
-                #[cfg(feature = "use_pem")]
+                #[cfg(feature = "ptd")]
+                return Ok(PemEncodedKey {
+                    content: content.into_contents(),
+                    _asn1: vec![],
+                    pem_type: PemType::EdPublic,
+                    standard: Standard::Pkcs8,
+                });
+
                 #[cfg(not(feature = "ptd"))]
                 let asn1_content = match simple_asn1::from_der(content.contents()) {
                     Ok(asn1) => asn1,
                     Err(_) => return Err(ErrorKind::InvalidKeyFormat.into()),
                 };
 
+                #[cfg(not(feature = "ptd"))]
                 match content.tag() {
-                    #[cfg(feature = "use_pem")]
                     // This handles a PKCS#1 RSA Private key
                     "RSA PRIVATE KEY" => Ok(PemEncodedKey {
                         content: content.into_contents(),
-                        #[cfg(feature = "use_pem")]
+                        #[cfg(not(feature = "ptd"))]
                         asn1: asn1_content,
                         pem_type: PemType::RsaPrivate,
                         standard: Standard::Pkcs1,
                     }),
-                    #[cfg(feature = "use_pem")]
                     "RSA PUBLIC KEY" => Ok(PemEncodedKey {
                         content: content.into_contents(),
-                        #[cfg(feature = "use_pem")]
+                        #[cfg(not(feature = "ptd"))]
                         asn1: asn1_content,
                         pem_type: PemType::RsaPublic,
                         standard: Standard::Pkcs1,
@@ -115,9 +110,8 @@ impl PemEncodedKey {
                     // "there is no such thing as a "PKCS#1 format" for elliptic curve (EC) keys"
 
                     // This handles PKCS#8 certificates and public & private keys
-                    _tag @ "PRIVATE KEY" | _tag @ "PUBLIC KEY" | _tag @ "CERTIFICATE" => {
-                        #[cfg(feature = "use_pem")]
-                        #[cfg(not(feature = "ptd"))]
+                    #[cfg(not(feature = "ptd"))]
+                    tag @ "PRIVATE KEY" | tag @ "PUBLIC KEY" | tag @ "CERTIFICATE" => {
                         match classify_pem(&asn1_content) {
                             Some(c) => {
                                 let is_private = tag == "PRIVATE KEY";
@@ -153,16 +147,7 @@ impl PemEncodedKey {
                             }
                             None => Err(ErrorKind::InvalidKeyFormat.into()),
                         }
-
-                        #[cfg(feature = "ptd")]
-                        Ok(PemEncodedKey {
-                            content: content.into_contents(),
-                            _asn1: vec![],
-                            pem_type: PemType::EdPublic,
-                            standard: Standard::Pkcs8,
-                        })
                     }
-
                     // Unknown/unsupported type
                     _ => Err(ErrorKind::InvalidKeyFormat.into()),
                 }
@@ -213,11 +198,15 @@ impl PemEncodedKey {
     /// Can only be PKCS8
     pub fn as_ed_public_key(&self) -> Result<&[u8]> {
         match self.standard {
+            #[cfg(not(feature = "ptd"))]
+            Standard::Pkcs1 => Err(ErrorKind::InvalidKeyFormat.into()),
             Standard::Pkcs8 => match self.pem_type {
                 #[cfg(not(feature = "ptd"))]
                 PemType::EdPublic => extract_first_bitstring(&self.asn1),
                 #[cfg(feature = "ptd")]
                 PemType::EdPublic => Ok(self.content.as_slice()),
+                #[cfg(not(feature = "ptd"))]
+                _ => Err(ErrorKind::InvalidKeyFormat.into()),
             },
         }
     }

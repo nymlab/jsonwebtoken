@@ -1,9 +1,10 @@
 use base64::{
-    engine::general_purpose::{STANDARD, URL_SAFE_NO_PAD},
+    engine::general_purpose::URL_SAFE_NO_PAD,
     Engine,
 };
 use serde::{Deserialize, Serialize};
-
+#[cfg(feature = "ptd")]
+use base64::engine::general_purpose::STANDARD;
 use crate::errors::Result;
 
 pub(crate) fn b64_encode<T: AsRef<[u8]>>(input: T) -> String {
@@ -15,11 +16,13 @@ pub(crate) fn b64_decode<T: AsRef<[u8]>>(input: T) -> Result<Vec<u8>> {
 }
 
 /// Decodes data from base64 string following STANDARD format
+#[cfg(feature = "ptd")]
 pub fn b64_decode_standard<T: AsRef<[u8]>>(input: T) -> Result<Vec<u8>> {
     STANDARD.decode(input).map_err(|e| e.into())
 }
 
 /// Serializes data into base64 following STANDARD format
+#[cfg(feature = "ptd")]
 pub fn b64_encode_standard<T: AsRef<[u8]>>(input: T) -> String {
     STANDARD.encode(input)
 }

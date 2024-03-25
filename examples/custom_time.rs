@@ -4,7 +4,6 @@ use jsonwebtoken_wasm::{Algorithm, DecodingKey, EncodingKey, Header, Validation}
 use time::{Duration, OffsetDateTime};
 #[cfg(not(feature = "ptd"))]
 const SECRET: &str = "some-secret";
-
 #[cfg(not(feature = "ptd"))]
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Claims {
