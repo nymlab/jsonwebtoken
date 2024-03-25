@@ -1,12 +1,9 @@
 [package]
 name = "jsonwebtoken_wasm"
 version = "9.2.0"
-authors = ["Vincent Prouillet <hello@vincentprouillet.com>"]
+authors = ["Vikram Bhattacharjee <vikram@nymlab.it>"]
 license = "MIT"
 readme = "README.md"
-description = "Create and decode JWTs in a strongly typed way."
-homepage = "https://github.com/Keats/jsonwebtoken"
-repository = "https://github.com/Keats/jsonwebtoken"
 keywords = ["jwt", "api", "token", "jwk"]
 edition = "2021"
 include = [

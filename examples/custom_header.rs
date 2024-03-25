@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 #[cfg(not(feature = "ptd"))]
 use jsonwebtoken_wasm::errors::ErrorKind;
 #[cfg(not(feature = "ptd"))]
 use jsonwebtoken_wasm::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {

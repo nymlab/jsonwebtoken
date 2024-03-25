@@ -12,10 +12,7 @@ pub(crate) mod rsa;
 use ed25519_dalek::Verifier;
 
 use crate::{
-    algorithms::Algorithm,
-    decoding::DecodingKey,
-    encoding::EncodingKey,
-    errors::Result,
+    algorithms::Algorithm, decoding::DecodingKey, encoding::EncodingKey, errors::Result,
     serialization::b64_decode,
 };
 

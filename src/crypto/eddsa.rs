@@ -1,15 +1,13 @@
-use crate::errors::Result;
-use crate::serialization::b64_encode;
-
+#[cfg(not(feature = "ptd"))]
+use crate::Algorithm;
 #[cfg(feature = "ptd")]
 use crate::EncodingKey;
 #[cfg(feature = "ptd")]
 use ed25519_dalek::{PublicKey, SecretKey, Signer};
-
-#[cfg(not(feature = "ptd"))]
-use crate::Algorithm;
 #[cfg(not(feature = "ptd"))]
 use ring::signature;
+
+use crate::{errors::Result, serialization::b64_encode};
 
 /// Only used internally when signing or validating EdDSA, to map from our enum to the Ring EdDSAParameters structs.
 #[cfg(not(feature = "ptd"))]

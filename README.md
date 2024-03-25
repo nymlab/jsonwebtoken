@@ -32,6 +32,8 @@ This library currently supports the following:
 - ES384
 - EdDSA
 
+Under ptd feature in only supports
+- EdDSA
 
 ## How to use
 Complete examples are available in the examples directory: a basic one and one with a custom header.

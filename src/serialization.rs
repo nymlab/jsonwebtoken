@@ -1,10 +1,8 @@
-use base64::{
-    engine::general_purpose::URL_SAFE_NO_PAD,
-    Engine,
-};
-use serde::{Deserialize, Serialize};
 #[cfg(feature = "ptd")]
 use base64::engine::general_purpose::STANDARD;
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
+use serde::{Deserialize, Serialize};
+
 use crate::errors::Result;
 
 pub(crate) fn b64_encode<T: AsRef<[u8]>>(input: T) -> String {
