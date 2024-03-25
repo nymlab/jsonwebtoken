@@ -11,12 +11,13 @@ pub(crate) mod rsa;
 #[cfg(feature = "ptd")]
 use ed25519_dalek::Verifier;
 
-use crate::algorithms::Algorithm;
-use crate::decoding::DecodingKey;
-use crate::encoding::EncodingKey;
-use crate::errors::Result;
-use crate::serialization::b64_decode;
-
+use crate::{
+    algorithms::Algorithm,
+    decoding::DecodingKey,
+    encoding::EncodingKey,
+    errors::Result,
+    serialization::b64_decode,
+};
 
 pub(crate) mod eddsa;
 
