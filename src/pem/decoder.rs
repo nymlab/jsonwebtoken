@@ -13,13 +13,23 @@ enum PemType {
 }
 
 /// Supported PEM files for EC and RSA Public and Private Keys
-#[cfg(feature = "ptd")]
+#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[derive(Debug, PartialEq)]
 enum PemType {
     EdPublic,
     EdPrivate,
 }
 
+/// Supported PEM files for EC and RSA Public and Private Keys
+#[cfg(feature = "ptd")]
+#[derive(Debug, PartialEq)]
+enum PemType {
+    EdPublic,
+}
+
+#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[derive(Debug, PartialEq)]
 enum Standard {
     // Only for RSA
@@ -28,6 +38,15 @@ enum Standard {
     Pkcs8,
 }
 
+#[cfg(feature = "ptd")]
+#[derive(Debug, PartialEq)]
+enum Standard {
+    // Ed
+    Pkcs8,
+}
+
+#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[derive(Debug, PartialEq)]
 enum Classification {
     Ec,
@@ -55,7 +74,7 @@ pub(crate) struct PemEncodedKey {
     #[cfg(not(feature = "ptd"))]
     asn1: Vec<simple_asn1::ASN1Block>,
     #[cfg(feature = "ptd")]
-    asn1: Vec<String>,
+    _asn1: Vec<String>,
     pem_type: PemType,
     standard: Standard,
 }
@@ -96,7 +115,7 @@ impl PemEncodedKey {
                     // "there is no such thing as a "PKCS#1 format" for elliptic curve (EC) keys"
 
                     // This handles PKCS#8 certificates and public & private keys
-                    tag @ "PRIVATE KEY" | tag @ "PUBLIC KEY" | tag @ "CERTIFICATE" => {
+                    _tag @ "PRIVATE KEY" | _tag @ "PUBLIC KEY" | _tag @ "CERTIFICATE" => {
                         #[cfg(feature = "use_pem")]
                         #[cfg(not(feature = "ptd"))]
                         match classify_pem(&asn1_content) {
@@ -138,7 +157,7 @@ impl PemEncodedKey {
                         #[cfg(feature = "ptd")]
                         Ok(PemEncodedKey {
                             content: content.into_contents(),
-                            asn1: vec![],
+                            _asn1: vec![],
                             pem_type: PemType::EdPublic,
                             standard: Standard::Pkcs8,
                         })
@@ -180,6 +199,7 @@ impl PemEncodedKey {
     }
 
     /// Can only be PKCS8
+    #[cfg(feature = "use_pem")]
     pub fn as_ed_private_key(&self) -> Result<&[u8]> {
         match self.standard {
             Standard::Pkcs1 => Err(ErrorKind::InvalidKeyFormat.into()),
@@ -193,13 +213,11 @@ impl PemEncodedKey {
     /// Can only be PKCS8
     pub fn as_ed_public_key(&self) -> Result<&[u8]> {
         match self.standard {
-            Standard::Pkcs1 => Err(ErrorKind::InvalidKeyFormat.into()),
             Standard::Pkcs8 => match self.pem_type {
                 #[cfg(not(feature = "ptd"))]
                 PemType::EdPublic => extract_first_bitstring(&self.asn1),
                 #[cfg(feature = "ptd")]
                 PemType::EdPublic => Ok(self.content.as_slice()),
-                _ => Err(ErrorKind::InvalidKeyFormat.into()),
             },
         }
     }

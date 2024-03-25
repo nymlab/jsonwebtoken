@@ -4,21 +4,21 @@ use crate::{decoding::DecodingKeyKind, serialization::b64_encode};
 use ring::constant_time::verify_slices_are_equal;
 #[cfg(not(feature = "ptd"))]
 use ring::{hmac, signature};
-
-use crate::algorithms::Algorithm;
-use crate::decoding::DecodingKey;
+#[cfg(not(feature = "ptd"))]
+pub(crate) mod ecdsa;
+#[cfg(not(feature = "ptd"))]
+pub(crate) mod rsa;
 #[cfg(feature = "ptd")]
 use ed25519_dalek::Verifier;
 
+use crate::algorithms::Algorithm;
+use crate::decoding::DecodingKey;
 use crate::encoding::EncodingKey;
 use crate::errors::Result;
 use crate::serialization::b64_decode;
 
-#[cfg(not(feature = "ptd"))]
-pub(crate) mod ecdsa;
+
 pub(crate) mod eddsa;
-#[cfg(not(feature = "ptd"))]
-pub(crate) mod rsa;
 
 /// The actual HS signing + encoding
 /// Could be in its own file to match RSA/EC but it's 2 lines...
@@ -62,7 +62,7 @@ pub fn sign(message: &[u8], key: &EncodingKey, algorithm: Algorithm) -> Result<S
         Algorithm::HS384 => Ok(String::new()),
         Algorithm::HS512 => Ok(String::new()),
         Algorithm::ES256 | Algorithm::ES384 => Ok(String::new()),
-        Algorithm::EdDSA => eddsa::sign(&key, message),
+        Algorithm::EdDSA => eddsa::sign(key, message),
         Algorithm::RS256
         | Algorithm::RS384
         | Algorithm::RS512
@@ -94,7 +94,7 @@ fn verify_ring(_algorithm: Algorithm, sig: &str, message: &[u8], key: &[u8]) -> 
     let dalek_signature = ed25519_dalek::Signature::from_bytes(&sig).unwrap();
     let public_key = ed25519_dalek::PublicKey::from_bytes(key_without_headers).unwrap();
 
-    let res = public_key.verify(&message, &dalek_signature);
+    let res = public_key.verify(message, &dalek_signature);
 
     Ok(res.is_ok())
 }
