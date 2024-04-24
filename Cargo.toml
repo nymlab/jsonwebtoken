@@ -1,5 +1,5 @@
 [package]
-name = "jsonwebtoken_wasm"
+name = "jsonwebtoken"
 version = "9.2.0"
 authors = ["Vikram Bhattacharjee <vikram@nymlab.it>"]
 license = "MIT"
@@ -38,7 +38,7 @@ wasm-bindgen-test = "0.3.1"
 
 [target.'cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))'.dev-dependencies]
 # For the custom time example
-time = { version = "0.3" } 
+time = { version = "0.3" }
 criterion = { version = "0.4" }
 
 [target.'cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))'.dev-dependencies]
