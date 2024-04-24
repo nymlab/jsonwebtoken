@@ -6,6 +6,7 @@ use crate::crypto::verify;
 use crate::errors::{new_error, ErrorKind, Result};
 use crate::header::Header;
 use crate::jwk::{AlgorithmParameters, Jwk};
+#[cfg(feature = "use_pem")]
 use crate::pem::decoder::PemEncodedKey;
 use crate::serialization::{b64_decode, DecodedJwtPartClaims};
 use crate::validation::{validate, Validation};
@@ -43,11 +44,7 @@ macro_rules! expect_two {
 #[derive(Clone)]
 pub(crate) enum DecodingKeyKind {
     SecretOrDer(Vec<u8>),
-    #[cfg(feature = "use_pem")]
-    RsaModulusExponent {
-        n: Vec<u8>,
-        e: Vec<u8>,
-    },
+    RsaModulusExponent { n: Vec<u8>, e: Vec<u8> },
 }
 
 /// All the different kind of keys we can use to decode a JWT.
@@ -86,7 +83,6 @@ impl DecodingKey {
     }
 
     /// If you have (n, e) RSA public key components as strings, use this.
-    #[cfg(feature = "use_pem")]
     pub fn from_rsa_components(modulus: &str, exponent: &str) -> Result<Self> {
         let n = b64_decode(modulus)?;
         let e = b64_decode(exponent)?;
@@ -97,7 +93,6 @@ impl DecodingKey {
     }
 
     /// If you have (n, e) RSA public key components already decoded, use this.
-    #[cfg(feature = "use_pem")]
     pub fn from_rsa_raw_components(modulus: &[u8], exponent: &[u8]) -> Self {
         DecodingKey {
             family: AlgorithmFamily::Rsa,
@@ -118,7 +113,6 @@ impl DecodingKey {
     }
 
     /// If you have (x,y) ECDSA key components
-    #[cfg(feature = "use_pem")]
     pub fn from_ec_components(x: &str, y: &str) -> Result<Self> {
         let x_cmp = b64_decode(x)?;
         let y_cmp = b64_decode(y)?;
@@ -136,6 +130,7 @@ impl DecodingKey {
 
     /// If you have a EdDSA public key in PEM format, use this.
     /// Only exists if the feature `use_pem` is enabled.
+    #[cfg(feature = "use_pem")]
     pub fn from_ed_pem(key: &[u8]) -> Result<Self> {
         let pem_key = PemEncodedKey::new(key)?;
         let content = pem_key.as_ed_public_key()?;
@@ -146,7 +141,6 @@ impl DecodingKey {
     }
 
     /// If you know what you're doing and have a RSA DER encoded public key, use this.
-    #[cfg(not(feature = "ptd"))]
     pub fn from_rsa_der(der: &[u8]) -> Self {
         DecodingKey {
             family: AlgorithmFamily::Rsa,
@@ -155,7 +149,6 @@ impl DecodingKey {
     }
 
     /// If you know what you're doing and have a RSA EC encoded public key, use this.
-    #[cfg(not(feature = "ptd"))]
     pub fn from_ec_der(der: &[u8]) -> Self {
         DecodingKey {
             family: AlgorithmFamily::Ec,
@@ -183,11 +176,9 @@ impl DecodingKey {
     /// If you have a key in Jwk format
     pub fn from_jwk(jwk: &Jwk) -> Result<Self> {
         match &jwk.algorithm {
-            #[cfg(feature = "use_pem")]
             AlgorithmParameters::RSA(params) => {
                 DecodingKey::from_rsa_components(&params.n, &params.e)
             }
-            #[cfg(feature = "use_pem")]
             AlgorithmParameters::EllipticCurve(params) => {
                 DecodingKey::from_ec_components(&params.x, &params.y)
             }
@@ -199,15 +190,12 @@ impl DecodingKey {
                     kind: DecodingKeyKind::SecretOrDer(out),
                 })
             }
-            #[cfg(feature = "ptd")]
-            _ => unimplemented!(),
         }
     }
 
     pub(crate) fn as_bytes(&self) -> &[u8] {
         match &self.kind {
             DecodingKeyKind::SecretOrDer(b) => b,
-            #[cfg(feature = "use_pem")]
             DecodingKeyKind::RsaModulusExponent { .. } => unreachable!(),
         }
     }

@@ -1,15 +1,13 @@
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::{
+use jsonwebtoken::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::{decode, encode, Header, Validation};
-#[cfg(not(feature = "ptd"))]
 use serde::{Deserialize, Serialize};
-#[cfg(not(feature = "ptd"))]
+
+#[cfg(feature = "use_pem")]
+use jsonwebtoken::{decode, encode, Header, Validation};
+#[cfg(feature = "use_pem")]
 use time::OffsetDateTime;
-#[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
@@ -19,7 +17,6 @@ pub struct Claims {
     exp: i64,
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pk8() {
@@ -34,7 +31,7 @@ fn round_trip_sign_verification_pk8() {
     assert!(is_valid);
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pem() {
@@ -53,7 +50,7 @@ fn round_trip_sign_verification_pem() {
     assert!(is_valid);
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_claim() {
@@ -79,7 +76,7 @@ fn round_trip_claim() {
     assert_eq!(my_claims, token_data.claims);
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn ec_x_y() {
@@ -106,11 +103,11 @@ fn ec_x_y() {
     assert!(res.is_ok());
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn ed_jwk() {
-    use jsonwebtoken_wasm::jwk::Jwk;
+    use jsonwebtoken::jwk::Jwk;
     use serde_json::json;
 
     let privkey = include_str!("private_ecdsa_key.pem");
@@ -145,7 +142,7 @@ fn ed_jwk() {
 }
 
 // https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn roundtrip_with_jwtio_example() {

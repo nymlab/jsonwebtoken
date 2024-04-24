@@ -1,16 +1,11 @@
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::errors::ErrorKind;
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::jwk::Jwk;
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::{
+use jsonwebtoken::errors::ErrorKind;
+use jsonwebtoken::jwk::Jwk;
+use jsonwebtoken::{
     crypto::{sign, verify},
     decode, decode_header, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation,
 };
 use serde::{Deserialize, Serialize};
-#[cfg(not(feature = "ptd"))]
 use time::OffsetDateTime;
-#[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
@@ -20,7 +15,6 @@ pub struct Claims {
     exp: i64,
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn sign_hs256() {
@@ -30,7 +24,6 @@ fn sign_hs256() {
     assert_eq!(result, expected);
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn verify_hs256() {
@@ -40,7 +33,6 @@ fn verify_hs256() {
     assert!(valid);
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn encode_with_custom_header() {
@@ -61,7 +53,6 @@ fn encode_with_custom_header() {
     assert_eq!("kid", token_data.header.kid.unwrap());
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_claim() {
@@ -82,7 +73,6 @@ fn round_trip_claim() {
     assert!(token_data.header.kid.is_none());
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn decode_token() {
@@ -96,7 +86,6 @@ fn decode_token() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 #[should_panic(expected = "InvalidToken")]
@@ -110,7 +99,6 @@ fn decode_token_missing_parts() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 #[should_panic(expected = "InvalidSignature")]
@@ -125,7 +113,6 @@ fn decode_token_invalid_signature() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 #[should_panic(expected = "InvalidAlgorithm")]
@@ -139,7 +126,6 @@ fn decode_token_wrong_algorithm() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 #[should_panic(expected = "InvalidAlgorithm")]
@@ -153,7 +139,6 @@ fn encode_wrong_alg_family() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn decode_token_with_bytes_secret() {
@@ -166,7 +151,6 @@ fn decode_token_with_bytes_secret() {
     assert!(claims.is_ok());
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn decode_header_only() {
@@ -176,7 +160,6 @@ fn decode_header_only() {
     assert_eq!(header.typ, Some("JWT".to_string()));
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn dangerous_insecure_decode_valid_token() {
@@ -187,7 +170,6 @@ fn dangerous_insecure_decode_valid_token() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn dangerous_insecure_decode_token_invalid_signature() {
@@ -198,7 +180,6 @@ fn dangerous_insecure_decode_token_invalid_signature() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn dangerous_insecure_decode_token_wrong_algorithm() {
@@ -209,7 +190,6 @@ fn dangerous_insecure_decode_token_wrong_algorithm() {
     claims.unwrap();
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn dangerous_insecure_decode_token_with_validation_wrong_algorithm() {
@@ -221,7 +201,6 @@ fn dangerous_insecure_decode_token_with_validation_wrong_algorithm() {
     assert_eq!(err.kind(), &ErrorKind::ExpiredSignature);
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn verify_hs256_rfc7517_appendix_a1() {

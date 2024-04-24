@@ -4,6 +4,9 @@ version = "9.3.0"
 authors = ["Vincent Prouillet <hello@vincentprouillet.com>"]
 license = "MIT"
 readme = "README.md"
+description = "Create and decode JWTs in a strongly typed way."
+homepage = "https://github.com/Keats/jsonwebtoken"
+repository = "https://github.com/Keats/jsonwebtoken"
 keywords = ["jwt", "api", "token", "jwk"]
 edition = "2021"
 include = [
@@ -22,15 +25,15 @@ serde = { version = "1.0", features = ["derive"] }
 base64 = "0.21.0"
 # For PEM decoding
 pem = { version = "3", optional = true }
-ed25519-dalek = { version = "1.0.1", optional = true }
 simple_asn1 = { version = "0.6", optional = true }
-getrandom = {version = "0.2", default-features = false, features = ["custom"]}
+# For no_rand feature to replace ring
+ed25519-dalek = {version = "1.0.1", optional = true}
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-ring = { version = "0.17.4", features = ["std"], optional = true }
+ring = { version = "0.17.4", features = ["std"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-js-sys = {version = "0.3", optional = true }
+js-sys = "0.3"
 ring = { version = "0.17.4", features = ["std", "wasm32_unknown_unknown_js"], optional = true }
 
 [dev-dependencies]
@@ -38,8 +41,8 @@ wasm-bindgen-test = "0.3.1"
 
 [target.'cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))'.dev-dependencies]
 # For the custom time example
-time = { version = "0.3" }
-criterion = { version = "0.4" }
+time = "0.3"
+criterion = "0.4"
 
 [target.'cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))'.dev-dependencies]
 # For the custom time example
@@ -47,9 +50,9 @@ time = { version = "0.3", features = ["wasm-bindgen"] }
 criterion = { version = "0.4", default-features = false }
 
 [features]
-default = ["ptd"]
-use_pem = ["pem", "simple_asn1", "ring"]
-ptd = ["ed25519-dalek", "pem"]
+default = ["use_pem"]
+use_pem = ["pem", "simple_asn1"]
+no_rand = ["use_pem", "ed25519-dalek"]
 
 [[bench]]
 name = "jwt"

@@ -1,15 +1,13 @@
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::{
+use jsonwebtoken::{
     crypto::{sign, verify},
     Algorithm, DecodingKey, EncodingKey,
 };
 use serde::{Deserialize, Serialize};
-#[cfg(not(feature = "ptd"))]
 use wasm_bindgen_test::wasm_bindgen_test;
 
-#[cfg(not(feature = "ptd"))]
-use jsonwebtoken_wasm::{decode, encode, Header, Validation};
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
+use jsonwebtoken::{decode, encode, Header, Validation};
+#[cfg(feature = "use_pem")]
 use time::OffsetDateTime;
 
 const RSA_ALGORITHMS: &[Algorithm] = &[
@@ -28,7 +26,7 @@ pub struct Claims {
     exp: i64,
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pem_pkcs1() {
@@ -60,7 +58,7 @@ fn round_trip_sign_verification_pem_pkcs1() {
     }
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_pem_pkcs8() {
@@ -92,7 +90,6 @@ fn round_trip_sign_verification_pem_pkcs8() {
     }
 }
 
-#[cfg(not(feature = "ptd"))]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_sign_verification_der() {
@@ -108,7 +105,7 @@ fn round_trip_sign_verification_der() {
     }
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn round_trip_claim() {
@@ -145,7 +142,7 @@ fn round_trip_claim() {
     }
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn rsa_modulus_exponent() {
@@ -172,11 +169,11 @@ fn rsa_modulus_exponent() {
     assert!(res.is_ok());
 }
 
-#[cfg(not(feature = "ptd"))]
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn rsa_jwk() {
-    use jsonwebtoken_wasm::jwk::Jwk;
+    use jsonwebtoken::jwk::Jwk;
     use serde_json::json;
 
     let privkey = include_str!("private_rsa_key_pkcs8.pem");
@@ -208,8 +205,8 @@ fn rsa_jwk() {
     assert!(res.is_ok());
 }
 
-// https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken_wasm
-#[cfg(not(feature = "ptd"))]
+// https://jwt.io/ is often used for examples so ensure their example works with jsonwebtoken
+#[cfg(feature = "use_pem")]
 #[test]
 #[wasm_bindgen_test]
 fn roundtrip_with_jwtio_example_jey() {

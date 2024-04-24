@@ -1,14 +1,10 @@
-#[cfg(not(feature = "ptd"))]
-use crate::{
-    algorithms::Algorithm,
-    errors::{ErrorKind, Result},
-    serialization::{b64_decode, b64_encode},
-};
-#[cfg(not(feature = "ptd"))]
 use ring::{rand, signature};
 
+use crate::algorithms::Algorithm;
+use crate::errors::{ErrorKind, Result};
+use crate::serialization::{b64_decode, b64_encode};
+
 /// Only used internally when validating RSA, to map from our enum to the Ring param structs.
-#[cfg(not(feature = "ptd"))]
 pub(crate) fn alg_to_rsa_parameters(alg: Algorithm) -> &'static signature::RsaParameters {
     match alg {
         Algorithm::RS256 => &signature::RSA_PKCS1_2048_8192_SHA256,
@@ -22,7 +18,6 @@ pub(crate) fn alg_to_rsa_parameters(alg: Algorithm) -> &'static signature::RsaPa
 }
 
 /// Only used internally when signing with RSA, to map from our enum to the Ring signing structs.
-#[cfg(not(feature = "ptd"))]
 pub(crate) fn alg_to_rsa_signing(alg: Algorithm) -> &'static dyn signature::RsaEncoding {
     match alg {
         Algorithm::RS256 => &signature::RSA_PKCS1_SHA256,
@@ -38,7 +33,6 @@ pub(crate) fn alg_to_rsa_signing(alg: Algorithm) -> &'static dyn signature::RsaE
 /// The actual RSA signing + encoding
 /// The key needs to be in PKCS8 format
 /// Taken from Ring doc https://docs.rs/ring/latest/ring/signature/index.html
-#[cfg(not(feature = "ptd"))]
 pub(crate) fn sign(
     alg: &'static dyn signature::RsaEncoding,
     key: &[u8],
@@ -55,7 +49,6 @@ pub(crate) fn sign(
 }
 
 /// Checks that a signature is valid based on the (n, e) RSA pubkey components
-#[cfg(not(feature = "ptd"))]
 pub(crate) fn verify_from_components(
     alg: &'static signature::RsaParameters,
     signature: &str,
