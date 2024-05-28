@@ -117,10 +117,9 @@ pub fn verify(
             use ed25519_dalek::Verifier;
 
             let sig = b64_decode(signature)?;
-            let key_without_headers = &key.as_bytes()[12..44];
 
             let dalek_signature = ed25519_dalek::Signature::from_bytes(&sig).unwrap();
-            let public_key = ed25519_dalek::PublicKey::from_bytes(key_without_headers).unwrap();
+            let public_key = ed25519_dalek::PublicKey::from_bytes(key.as_bytes()).unwrap();
 
             let res = public_key.verify(message, &dalek_signature);
 
