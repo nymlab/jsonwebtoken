@@ -101,7 +101,7 @@ pub struct Validation {
     /// The validation will check that the `alg` of the header is contained
     /// in the ones provided and will error otherwise. Will error if it is empty.
     ///
-    /// Defaults to `vec![Algorithm::HS256]`.
+    /// Defaults to `vec![Algorithm::HS256]` for normal and Ed25519 for no_rand.
     pub algorithms: Vec<Algorithm>,
 
     /// Whether to validate the JWT signature. Very insecure to turn that off
@@ -374,6 +374,7 @@ where
     }
 }
 
+#[cfg(not(feature = "no_rand"))]
 #[cfg(test)]
 mod tests {
     use serde_json::json;

@@ -2,7 +2,7 @@
 use ring::{constant_time::verify_slices_are_equal, hmac, signature};
 
 use crate::algorithms::Algorithm;
-use crate::decoding::{DecodingKey, DecodingKeyKind};
+use crate::decoding::{DecodingKey};
 #[cfg(not(feature = "no_rand"))]
 use crate::encoding::EncodingKey;
 use crate::errors::Result;
@@ -128,7 +128,7 @@ pub fn verify(
                     crate::errors::new_error(crate::errors::ErrorKind::InvalidKeyFormat)
                 })?;
 
-            let verifying_key = ed25519_dalek::VerifyingKey::from_bytes(&key_bytes).unwrap();
+            let verifying_key = ed25519_dalek::VerifyingKey::from_bytes(key_bytes).unwrap();
 
             let res = verifying_key.verify_strict(message, &dalek_signature);
 

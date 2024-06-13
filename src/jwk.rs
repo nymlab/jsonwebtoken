@@ -441,6 +441,7 @@ impl JwkSet {
     }
 }
 
+#[cfg(not(feature = "no_rand"))]
 #[cfg(test)]
 mod tests {
     use crate::jwk::{AlgorithmParameters, JwkSet, OctetKeyType};
