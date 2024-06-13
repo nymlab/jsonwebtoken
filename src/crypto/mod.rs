@@ -114,14 +114,21 @@ pub fn verify(
     #[cfg(feature = "no_rand")]
     match algorithm {
         Algorithm::EdDSA => {
-            use ed25519_dalek::Verifier;
+            use std::convert::TryInto;
 
             let sig = b64_decode(signature)?;
+            let dalek_signature = ed25519_dalek::Signature::from_slice(&sig).map_err(|_| {
+                crate::errors::new_error(crate::errors::ErrorKind::InvalidSignature)
+            })?;
 
-            let dalek_signature = ed25519_dalek::Signature::from_bytes(&sig).unwrap();
-            let public_key = ed25519_dalek::PublicKey::from_bytes(key.as_bytes()).unwrap();
+            let key_bytes: &[u8; ed25519_dalek::PUBLIC_KEY_LENGTH] =
+                key.as_bytes().try_into().map_err(|_| {
+                    crate::errors::new_error(crate::errors::ErrorKind::InvalidKeyFormat)
+                })?;
 
-            let res = public_key.verify(message, &dalek_signature);
+            let verifying_key = ed25519_dalek::VerifyingKey::from_bytes(&key_bytes).unwrap();
+
+            let res = verifying_key.verify_strict(message, &dalek_signature);
 
             Ok(res.is_ok())
         }

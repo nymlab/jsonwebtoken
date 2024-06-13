@@ -27,7 +27,7 @@ base64 = "0.21.0"
 pem = { version = "3", optional = true }
 simple_asn1 = { version = "0.6", optional = true }
 # For no_rand feature to replace ring
-ed25519-dalek = {version = "1.0.1", optional = true}
+ed25519-dalek = {version = "2.1.1", optional = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ring = { version = "0.17.4", features = ["std"] }
