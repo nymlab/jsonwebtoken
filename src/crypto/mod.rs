@@ -6,7 +6,9 @@ use crate::decoding::{DecodingKey, DecodingKeyKind};
 #[cfg(not(feature = "no_rand"))]
 use crate::encoding::EncodingKey;
 use crate::errors::Result;
-use crate::serialization::{b64_decode, b64_encode};
+use crate::serialization::b64_decode;
+#[cfg(not(feature = "no_rand"))]
+use crate::serialization::b64_encode;
 
 #[cfg(not(feature = "no_rand"))]
 pub(crate) mod ecdsa;

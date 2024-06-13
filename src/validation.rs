@@ -163,12 +163,13 @@ impl Validation {
 
 impl Default for Validation {
     fn default() -> Self {
-        Self::new(Algorithm::HS256)
+        Self::new(Algorithm::default())
     }
 }
 
 /// Gets the current timestamp in the format expected by JWTs.
 #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+#[cfg(not(feature = "no_rand"))]
 #[must_use]
 pub fn get_current_timestamp() -> u64 {
     let start = std::time::SystemTime::now();

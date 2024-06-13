@@ -393,12 +393,20 @@ pub struct OctetKeyPairParameters {
 }
 
 /// Algorithm specific parameters
+#[cfg(not(feature = "no_rand"))]
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize, Hash)]
 #[serde(untagged)]
 pub enum AlgorithmParameters {
     EllipticCurve(EllipticCurveKeyParameters),
     RSA(RSAKeyParameters),
     OctetKey(OctetKeyParameters),
+    OctetKeyPair(OctetKeyPairParameters),
+}
+
+#[cfg(feature = "no_rand")]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize, Hash)]
+#[serde(untagged)]
+pub enum AlgorithmParameters {
     OctetKeyPair(OctetKeyPairParameters),
 }
 

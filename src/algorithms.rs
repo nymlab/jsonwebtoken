@@ -2,6 +2,7 @@ use crate::errors::{Error, ErrorKind, Result};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
+#[cfg(not(feature = "no_rand"))]
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Serialize, Deserialize)]
 pub(crate) enum AlgorithmFamily {
     Hmac,
@@ -10,7 +11,24 @@ pub(crate) enum AlgorithmFamily {
     Ed,
 }
 
+#[cfg(feature = "no_rand")]
+#[derive(Debug, Eq, PartialEq, Copy, Clone, Serialize, Deserialize)]
+pub(crate) enum AlgorithmFamily {
+    Ed,
+}
+
 /// The algorithms supported for signing/verifying JWTs
+#[cfg(feature = "no_rand")]
+#[allow(clippy::upper_case_acronyms)]
+#[derive(Debug, Default, PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
+pub enum Algorithm {
+    /// Edwards-curve Digital Signature Algorithm (EdDSA)
+    #[default]
+    EdDSA,
+}
+
+/// The algorithms supported for signing/verifying JWTs
+#[cfg(not(feature = "no_rand"))]
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Default, PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
 pub enum Algorithm {
@@ -47,6 +65,7 @@ pub enum Algorithm {
 
 impl FromStr for Algorithm {
     type Err = Error;
+    #[cfg(not(feature = "no_rand"))]
     fn from_str(s: &str) -> Result<Self> {
         match s {
             "HS256" => Ok(Algorithm::HS256),
@@ -64,9 +83,17 @@ impl FromStr for Algorithm {
             _ => Err(ErrorKind::InvalidAlgorithmName.into()),
         }
     }
+    #[cfg(feature = "no_rand")]
+    fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "EdDSA" => Ok(Algorithm::EdDSA),
+            _ => Err(ErrorKind::InvalidAlgorithmName.into()),
+        }
+    }
 }
 
 impl Algorithm {
+    #[cfg(not(feature = "no_rand"))]
     pub(crate) fn family(self) -> AlgorithmFamily {
         match self {
             Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512 => AlgorithmFamily::Hmac,
@@ -77,6 +104,12 @@ impl Algorithm {
             | Algorithm::PS384
             | Algorithm::PS512 => AlgorithmFamily::Rsa,
             Algorithm::ES256 | Algorithm::ES384 => AlgorithmFamily::Ec,
+            Algorithm::EdDSA => AlgorithmFamily::Ed,
+        }
+    }
+    #[cfg(feature = "no_rand")]
+    pub(crate) fn family(self) -> AlgorithmFamily {
+        match self {
             Algorithm::EdDSA => AlgorithmFamily::Ed,
         }
     }
