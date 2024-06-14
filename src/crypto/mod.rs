@@ -2,11 +2,16 @@
 use ring::{constant_time::verify_slices_are_equal, hmac, signature};
 
 use crate::algorithms::Algorithm;
-use crate::decoding::{DecodingKey, DecodingKeyKind};
+use crate::decoding::DecodingKey;
+#[cfg(not(feature = "no_rand"))]
+use crate::decoding::DecodingKeyKind;
 #[cfg(not(feature = "no_rand"))]
 use crate::encoding::EncodingKey;
 use crate::errors::Result;
-use crate::serialization::{b64_decode, b64_encode};
+use crate::serialization::b64_decode;
+
+#[cfg(not(feature = "no_rand"))]
+use crate::serialization::b64_encode;
 
 #[cfg(not(feature = "no_rand"))]
 pub(crate) mod ecdsa;
@@ -114,8 +119,6 @@ pub fn verify(
     #[cfg(feature = "no_rand")]
     match algorithm {
         Algorithm::EdDSA => {
-            use std::convert::TryInto;
-
             let sig = b64_decode(signature)?;
             let dalek_signature = ed25519_dalek::Signature::from_slice(&sig).map_err(|_| {
                 crate::errors::new_error(crate::errors::ErrorKind::InvalidSignature)
